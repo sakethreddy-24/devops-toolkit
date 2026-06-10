@@ -28,7 +28,7 @@ grep -ci "$pattern" "$file" 2>/dev/null || echo 0
 
 show_summary() {
     local file="$1"
-    local total lines errors warnings criticals
+    local lines errors warnings criticals
 
     lines=$(wc -l < "$file")
     errors=$(count_occurrences "$file" "\[error\]\|error:\| ERROR ")

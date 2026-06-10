@@ -73,14 +73,14 @@ scan_host() {
 
 show_listening_services() {
     log_section "Locally Listening Services"
-    echo -e "${BOLD}$(printf '%-10s %-10s %-20s %s\n' 'PROTO' 'PORT' 'PID/PROGRAM' 'ADDRESS')${RESET}"
-    echo "$(printf '%.0s─' {1..55})"
+    echo -e "${BOLD}$(printf '%-10s %-10s %s\n' 'PROTO' 'PORT' 'ADDRESS')${RESET}"
+    echo "$(printf '%.0s─' {1..40})"
 
-    ss -tlnp 2>/dev/null | tail -n +2 | while read -r state recv send local remote process; do
+    ss -tlnp 2>/dev/null | tail -n +2 | while read -r line; do
         local port addr
-        port=$(echo "$local" | rev | cut -d: -f1 | rev)
-        addr=$(echo "$local" | rev | cut -d: -f2- | rev)
-        echo -e "${GREEN}$(printf '%-10s %-10s %-20s %s\n' 'TCP' "$port" "${process:-unknown}" "$addr")${RESET}"
+        addr=$(echo "$line" | awk '{print $4}')
+        port=$(echo "$addr" | rev | cut -d: -f1 | rev)
+        echo -e "${GREEN}$(printf '%-10s %-10 %s\n' 'TCP' "$port" "$addr")${RESET}"
     done
 }
 
@@ -110,7 +110,7 @@ main() {
     if [[ ${#custom_ports[@]} -gt 0 ]]; then
         ports_to_scan=("${custom_ports[@]}")
     elif [[ "$scan_all" == true ]]; then
-        ports_to_scan=($(seq 1 1024))
+        map file -t ports_to_scan <<($(seq 1 1024))
     else
         ports_to_scan=("${COMMON_PORTS[@]}")
     fi

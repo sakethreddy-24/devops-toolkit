@@ -9,11 +9,11 @@ usage() {
 echo -e "${BOLD}Usage:"${RESET} $0 <command> [optional]"
 echo -e ""
     echo -e "${BOLD}Commands:${RESET}"
-    echo -e "  create <username> [group]   Create a user with SSH key"
-    echo -e "  delete <username>           Delete a user and home dir"
-    echo -e "  list                        List all non-system users"
-    echo -e "  info <username>             Show user details"
-    echo -e "  batch <csv-file>            Bulk create from CSV (user,group)"
+    echo -e "  create username group  --Create a user with SSH key"
+    echo -e "  delete username        --Delete a user and home dir"
+    echo -e "  list                   --List all non-system users"
+    echo -e "  info username          --Show user details"
+    echo -e "  batch csv-file         --Bulk create from CSV"
     exit 1
 }
 
