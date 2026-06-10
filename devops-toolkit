@@ -20,26 +20,28 @@ show_banner() {
 
 show_menu() {
     echo -e "${BOLD}Available Tools:${RESET}"
-    echo -e "  ${GREEN}1)${RESET} system-health   — System resource and health report"
-    echo -e "  ${GREEN}2)${RESET} backup          — Backup manager with retention"
-    echo -e "  ${GREEN}3)${RESET} logs            — View toolkit logs"
+    echo -e "  ${GREEN}1)${RESET} system-health   — CPU, memory, disk, process report"
+    echo -e "  ${GREEN}2)${RESET} backup          — Backup with retention policy"
+    echo -e "  ${GREEN}3)${RESET} log-analyzer    — Parse logs, detect errors"
+    echo -e "  ${GREEN}4)${RESET} port-scanner    — Scan open ports and services"
+    echo -e "  ${GREEN}5)${RESET} user-manager    — Create/delete/list users"
+    echo -e "  ${GREEN}l)${RESET} logs            — View recent toolkit logs"
     echo -e "  ${GREEN}q)${RESET} quit"
     echo ""
 }
 
 run_tool() {
     case "$1" in
-        1|system-health)
-            bash "$TOOLKIT_DIR/tools/system-health.sh" ;;
-        2|backup)
-            shift
-            bash "$TOOLKIT_DIR/tools/backup-manager.sh" "$@" ;;
-        logs)
+        1|system-health)  bash "$TOOLKIT_DIR/tools/system-health.sh" ;;
+        2|backup)         shift; bash "$TOOLKIT_DIR/tools/backup-manager.sh" "$@" ;;
+        3|log-analyzer)   shift; bash "$TOOLKIT_DIR/tools/log-analyzer.sh" "$@" ;;
+        4|port-scanner)   shift; bash "$TOOLKIT_DIR/tools/port-scanner.sh" "$@" ;;
+        5|user-manager)   shift; bash "$TOOLKIT_DIR/tools/user-manager.sh" "$@" ;;
+        l|logs)
+            log_section "Recent Toolkit Logs"
             ls -lt "$TOOLKIT_DIR/logs/"*.log 2>/dev/null | head -5
             ;;
-        *)
-            log_error "Unknown tool: $1"
-            show_menu ;;
+        *) log_error "Unknown tool: $1"; show_menu ;;
     esac
 }
 
