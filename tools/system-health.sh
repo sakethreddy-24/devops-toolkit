@@ -32,7 +32,9 @@ check_cpu() {
 
 check_memory() {
     log_section "Memory Usage"
-    local total used mem_pct
+    local total
+    local used
+    local mem_pct
     total=$(free -m | awk '/^Mem:/{print $2}')
     used=$(free -m | awk '/^Mem:/{print $3}')
     mem_pct=$(( used * 100 / total ))
