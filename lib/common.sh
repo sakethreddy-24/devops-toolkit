@@ -1,6 +1,6 @@
 #!/bin/bash
 # =====================================================
-#common.sh — Shared library for devops-toolkit
+# common.sh — Shared library for devops-toolkit
 # ============================================================
 
 # --- Colors ---
@@ -12,27 +12,27 @@ CYAN='\033[0;36m'
 BOLD='\033[1m'
 RESET='\033[0m'
 
-# ---Logging setup ---
+# --- Logging setup ---
 LOG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/logs"
 LOG_FILE="$LOG_DIR/toolkit-$(date +%Y-%m-%d).log"
 
 # --- Logging Functions ---
 log_info() {
-local msg ="[INFO] $(date '+%Y-%m-%d %H:%M:%S') - $1"
-echo -e "${GREEN}${msg}${RESET}"
-echo "$msg" >> "$LOG_FILE"
+    local msg="[INFO] $(date '+%Y-%m-%d %H:%M:%S') - $1"
+    echo -e "${GREEN}${msg}${RESET}"
+    echo "$msg" >> "$LOG_FILE"
 }
 
 log_warn() {
-    local msg=[INFO] $(date '+%y-%m-%d %H:%M:%S') -$1"
+    local msg="[WARN] $(date '+%Y-%m-%d %H:%M:%S') - $1"
     echo -e "${YELLOW}${msg}${RESET}"
     echo "$msg" >> "$LOG_FILE"
 }
 
 log_error() {
-local msg="[ERROR] $(date '+%y-%m-%d %H:%M:%S') -$1"
-echo -e "${RED}${msg}${RESET}" >&2
-echo "$msg" >> "$LOG_FILE"
+    local msg="[ERROR] $(date '+%Y-%m-%d %H:%M:%S') - $1"
+    echo -e "${RED}${msg}${RESET}" >&2
+    echo "$msg" >> "$LOG_FILE"
 }
 
 log_section() {
@@ -43,16 +43,14 @@ log_section() {
 
 # --- Error Handling ---
 die() {
-log_error "$1"
-exit "${2:-1}"
+    log_error "$1"
+    exit "${2:-1}"
 }
 
 # --- Dependency checker ---
 require_command() {
-command -v "$1" &>/dev/null || die "Required command '$1' not found. Please install it."
+    command -v "$1" &>/dev/null || die "Required command '$1' not found. Please install it."
 }
-
-# --- 
 
 # --- Confirm prompt ---
 confirm() {
@@ -65,7 +63,6 @@ confirm() {
 require_root() {
     [[ "$EUID" -eq 0 ]] || die "This script must be run as root."
 }
-
 
 # --- OS detection ---
 detect_os() {
