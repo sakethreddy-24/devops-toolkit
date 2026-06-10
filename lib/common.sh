@@ -18,21 +18,27 @@ LOG_FILE="$LOG_DIR/toolkit-$(date +%Y-%m-%d).log"
 # --- Logging Functions ---
 log_info() {
     local msg
-    msg="[INFO] $(date '+%Y-%m-%d %H:%M:%S') - $1"
+    local timestamp
+    timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    msg="[INFO] $timestamp - $1"
     echo -e "${GREEN}${msg}${RESET}"
     echo "$msg" >> "$LOG_FILE"
 }
 
 log_warn() {
     local msg
-    msg="[WARN] $(date '+%Y-%m-%d %H:%M:%S') - $1"
+    local timestamp
+    timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    msg="[WARN] $timestamp - $1"
     echo -e "${YELLOW}${msg}${RESET}"
     echo "$msg" >> "$LOG_FILE"
 }
 
 log_error() {
     local msg
-    msg="[ERROR] $(date '+%Y-%m-%d %H:%M:%S') - $1"
+    local timestamp
+    timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    msg="[ERROR] $timestamp - $1"
     echo -e "${RED}${msg}${RESET}" >&2
     echo "$msg" >> "$LOG_FILE"
 }
