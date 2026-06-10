@@ -2,20 +2,20 @@
 # port-scanner.sh — Check open ports and listening services
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# shellcheck source=../lib/common.sh
 source "$SCRIPT_DIR/lib/common.sh"
 
 TIMEOUT=2
+COMMON_PORTS=(21 22 23 25 53 80 443 3000 3306 5432 5672 6379 8080 8443 8888 9090 9200 27017)
 
 usage() {
     echo -e "${BOLD}Usage:${RESET} $0 [host] [options]"
     echo -e "  host          Target host (default: localhost)"
-    echo -e "  -p <ports>    Comma-separated ports to scan (default: common ports)"
+    echo -e "  -p ports      Comma-separated ports to scan"
     echo -e "  -l            Show locally listening services only"
-    echo -e "  -a            Scan all common ports (1-1024)"
+    echo -e "  -a            Scan all common ports 1-1024"
     exit 1
 }
-
-COMMON_PORTS=(21 22 23 25 53 80 443 3000 3306 5432 5672 6379 8080 8443 8888 9090 9200 27017)
 
 scan_port() {
     local host="$1"
@@ -46,25 +46,25 @@ scan_host() {
 
     log_section "Port Scan: $host"
     echo -e "${BOLD}$(printf '%-8s %-15s %-12s %s\n' 'PORT' 'SERVICE' 'STATUS' 'NOTE')${RESET}"
-    echo "$(printf '%.0s─' {1..50})"
+    printf '%.0s-' {1..50}
+    echo ""
 
     local open_count=0
     for port in "${ports[@]}"; do
-        local service status color note=""
+        local service note color
         service=$(get_service_name "$port")
+        note=""
 
         if scan_port "$host" "$port"; then
-            status="OPEN"
             color="$GREEN"
             ((open_count++))
-            [[ "$port" == "23" ]] && note="⚠ Insecure protocol"
-            [[ "$port" == "21" ]] && note="⚠ Use SFTP instead"
+            [[ "$port" == "23" ]] && note="Insecure protocol"
+            [[ "$port" == "21" ]] && note="Use SFTP instead"
+            echo -e "${color}$(printf '%-8s %-15s %-12s %s\n' "$port" "$service" "OPEN" "$note")${RESET}"
         else
-            status="CLOSED"
             color="$RED"
+            echo -e "${color}$(printf '%-8s %-15s %-12s\n' "$port" "$service" "CLOSED")${RESET}"
         fi
-
-        echo -e "${color}$(printf '%-8s %-15s %-12s %s\n' "$port" "$service" "$status" "$note")${RESET}"
     done
 
     echo ""
@@ -74,13 +74,14 @@ scan_host() {
 show_listening_services() {
     log_section "Locally Listening Services"
     echo -e "${BOLD}$(printf '%-10s %-10s %s\n' 'PROTO' 'PORT' 'ADDRESS')${RESET}"
-    echo "$(printf '%.0s─' {1..40})"
+    printf '%.0s-' {1..40}
+    echo ""
 
     ss -tlnp 2>/dev/null | tail -n +2 | while read -r line; do
         local port addr
         addr=$(echo "$line" | awk '{print $4}')
         port=$(echo "$addr" | rev | cut -d: -f1 | rev)
-        echo -e "${GREEN}$(printf '%-10s %-10 %s\n' 'TCP' "$port" "$addr")${RESET}"
+        echo -e "${GREEN}$(printf '%-10s %-10s %s\n' 'TCP' "$port" "$addr")${RESET}"
     done
 }
 
@@ -106,11 +107,13 @@ main() {
         exit 0
     fi
 
-    local ports_to_scan
+    local ports_to_scan=()
     if [[ ${#custom_ports[@]} -gt 0 ]]; then
         ports_to_scan=("${custom_ports[@]}")
     elif [[ "$scan_all" == true ]]; then
-        map file -t ports_to_scan <<($(seq 1 1024))
+        while IFS= read -r p; do
+            ports_to_scan+=("$p")
+        done < <(seq 1 1024)
     else
         ports_to_scan=("${COMMON_PORTS[@]}")
     fi
