@@ -1,0 +1,63 @@
+#!/bin/bash
+# devops-toolkit — Master CLI entry point
+
+TOOLKIT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$TOOLKIT_DIR/lib/common.sh"
+
+VERSION="1.0.0"
+
+show_banner() {
+    echo -e "${BOLD}${CYAN}"
+    echo "  ██████╗ ███████╗██╗   ██╗ ██████╗ ██████╗ ███████╗"
+    echo "  ██╔══██╗██╔════╝██║   ██║██╔═══██╗██╔══██╗██╔════╝"
+    echo "  ██║  ██║█████╗  ██║   ██║██║   ██║██████╔╝███████╗"
+    echo "  ██║  ██║██╔══╝  ╚██╗ ██╔╝██║   ██║██╔═══╝ ╚════██║"
+    echo "  ██████╔╝███████╗ ╚████╔╝ ╚██████╔╝██║     ███████║"
+    echo "  ╚═════╝ ╚══════╝  ╚═══╝   ╚═════╝ ╚═╝     ╚══════╝"
+    echo -e "                    DevOps Toolkit v${VERSION}${RESET}"
+    echo ""
+}
+
+show_menu() {
+    echo -e "${BOLD}Available Tools:${RESET}"
+    echo -e "  ${GREEN}1)${RESET} system-health   — System resource and health report"
+    echo -e "  ${GREEN}2)${RESET} backup          — Backup manager with retention"
+    echo -e "  ${GREEN}3)${RESET} logs            — View toolkit logs"
+    echo -e "  ${GREEN}q)${RESET} quit"
+    echo ""
+}
+
+run_tool() {
+    case "$1" in
+        1|system-health)
+            bash "$TOOLKIT_DIR/tools/system-health.sh" ;;
+        2|backup)
+            shift
+            bash "$TOOLKIT_DIR/tools/backup-manager.sh" "$@" ;;
+        logs)
+            ls -lt "$TOOLKIT_DIR/logs/"*.log 2>/dev/null | head -5
+            ;;
+        *)
+            log_error "Unknown tool: $1"
+            show_menu ;;
+    esac
+}
+
+main() {
+    show_banner
+
+    if [[ $# -gt 0 ]]; then
+        run_tool "$@"
+        exit 0
+    fi
+
+    while true; do
+        show_menu
+        read -rp "$(echo -e "${BOLD}Select tool: ${RESET}")" choice
+        [[ "$choice" == "q" ]] && { log_info "Goodbye!"; exit 0; }
+        run_tool "$choice"
+        echo ""
+    done
+}
+
+main "$@"
