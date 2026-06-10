@@ -7,7 +7,6 @@
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
-BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 BOLD='\033[1m'
 RESET='\033[0m'
@@ -18,19 +17,22 @@ LOG_FILE="$LOG_DIR/toolkit-$(date +%Y-%m-%d).log"
 
 # --- Logging Functions ---
 log_info() {
-    local msg="[INFO] $(date '+%Y-%m-%d %H:%M:%S') - $1"
+    local msg
+    msg="[INFO] $(date '+%Y-%m-%d %H:%M:%S') - $1"
     echo -e "${GREEN}${msg}${RESET}"
     echo "$msg" >> "$LOG_FILE"
 }
 
 log_warn() {
-    local msg="[WARN] $(date '+%Y-%m-%d %H:%M:%S') - $1"
+    local msg
+    msg="[WARN] $(date '+%Y-%m-%d %H:%M:%S') - $1"
     echo -e "${YELLOW}${msg}${RESET}"
     echo "$msg" >> "$LOG_FILE"
 }
 
 log_error() {
-    local msg="[ERROR] $(date '+%Y-%m-%d %H:%M:%S') - $1"
+    local msg
+    msg="[ERROR] $(date '+%Y-%m-%d %H:%M:%S') - $1"
     echo -e "${RED}${msg}${RESET}" >&2
     echo "$msg" >> "$LOG_FILE"
 }

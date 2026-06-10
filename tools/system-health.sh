@@ -13,7 +13,7 @@ DISK_WARN=80
 DISK_CRIT=95
 
 check_cpu() {
- log_section "CPU Usage"
+    log_section "CPU Usage"
     local cpu_idle
     cpu_idle=$(top -bn1 | grep "Cpu(s)" | awk '{print $8}' | cut -d. -f1)
     local cpu_used=$((100 - cpu_idle))
@@ -31,11 +31,10 @@ check_cpu() {
 }
 
 check_memory() {
-  log_section "Memory Usage"
-    local total used free mem_pct
+    log_section "Memory Usage"
+    local total used mem_pct
     total=$(free -m | awk '/^Mem:/{print $2}')
     used=$(free -m | awk '/^Mem:/{print $3}')
-    free=$(free -m | awk '/^Mem:/{print $4}')
     mem_pct=$(( used * 100 / total ))
 
     if [[ $mem_pct -ge $MEM_CRIT ]]; then
