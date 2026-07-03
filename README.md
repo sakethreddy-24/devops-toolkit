@@ -33,3 +33,16 @@ chmod +x devops-toolkit
 ```
 
 ## Architecture
+devops-toolkit/
+├── devops-toolkit       # master CLI entry point
+├── tools/               # individual automation tools
+├── lib/common.sh        # shared logging, colors, error handling
+├── logs/                # auto-generated run logs
+└── .github/workflows/   # CI pipeline (ShellCheck)
+
+## Skills demonstrated
+- Advanced bash scripting (error handling, logging, modularity)
+- Linux system administration
+- Git branching and conventional commits
+- GitHub Actions CI pipeline
+- Production-grade code structure
