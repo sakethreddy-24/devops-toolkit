@@ -1,4 +1,4 @@
-cat > README.md << 'EOF'
+
 # DevOps Toolkit
 
 ![ShellCheck](https://github.com/sakethreddy-24/devops-toolkit/actions/workflows/shellcheck.yml/badge.svg)
